@@ -2,8 +2,15 @@
 import axios from 'axios';
 import { API_ENDPOINTS, API_CONFIG } from './api.config';
 
+// the build process should supply VITE_API_URL; fail early if it's absent
+const baseURL = import.meta.env.VITE_API_URL as string;
+if (!baseURL) {
+  // in development we might want a fallback, but for production it's safer to crash
+  console.error('VITE_API_URL is not defined – set it in your .env or build environment');
+}
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000',
+  baseURL,
   timeout: API_CONFIG.TIMEOUT,
   headers: {
     'Content-Type': 'application/json',

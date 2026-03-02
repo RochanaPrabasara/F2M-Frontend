@@ -20,7 +20,7 @@ import {
   Plus,
 } from 'lucide-react';
 
-import { Card } from '../../components/ui/Card';
+// `Card` import removed — was unused and caused TypeScript build error (TS6133)
 import { getListingById } from '../../services/listing.service';
 import axiosInstance from '../../config/axios.config';
 

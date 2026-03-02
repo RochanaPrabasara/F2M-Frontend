@@ -116,10 +116,9 @@ export default function FarmerOrders() {
     completed: orders.filter(o => o.status === 'completed').length,
   };
 
-  // Live counts — re-derived every render from orders state
-  const pendingCount   = orders.filter(o => ['pending', 'payment_pending', 'payment_uploaded'].includes(o.status)).length;
-  const confirmedCount = orders.filter(o => o.status === 'confirmed').length;
-  const completedCount = orders.filter(o => o.status === 'completed').length;
+  // Note: individual `pendingCount`, `confirmedCount`, `completedCount` were removed
+  // because `counts` object above provides the same live values and the separate
+  // declarations were unused, causing build errors.
 
   const filteredOrders = orders.filter((order) => {
     if (activeTab === 'all') return true;

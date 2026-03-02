@@ -102,7 +102,7 @@ export default function BuyerProfile() {
   const handleSaveAvatar = async () => {
     if (!avatarPreview || !user) { alert('No photo selected or user not loaded'); return; }
     try {
-      const { avatar } = await authService.uploadAvatar(avatarPreview);
+      await authService.uploadAvatar(avatarPreview);
       const refreshedUser = await authService.getCurrentUserFromServer();
       setUser(refreshedUser);
       setShowAvatarModal(false);

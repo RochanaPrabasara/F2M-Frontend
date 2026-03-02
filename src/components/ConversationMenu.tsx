@@ -16,6 +16,11 @@ export default function ConversationMenu({
   onDeleteClick,
   accentColor = 'green',
 }: Props) {
+  // `conversationId` and `participantName` are passed by callers but not used
+  // in this component; mark them as used to satisfy TypeScript's
+  // `noUnusedLocals`/`noUnusedParameters` checks without changing behavior.
+  void conversationId;
+  void participantName;
   const [open, setOpen] = useState(false);
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);

@@ -11,7 +11,48 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+## Configuration & Deployment
+
+This project reads build‑time variables from environment files. Vite will load:
+
+1. `.env` — default (development) values
+2. `.env.[mode]` — e.g. `.env.production` when building with `npm run build`
+3. `.env.local`, `.env.production.local` — for machine‑specific secrets
+
+### Important variables
+
+| Name | Description | Example |
+|------|-------------|---------|
+| `VITE_API_URL` | Base URL for the backend API (required) | `https://api.farm2market.com` |
+| `VITE_APP_NAME` | Friendly app name (used in UI if needed) | `Farm2Market` |
+| `VITE_APP_ENV` | Environment indicator (`development`/`production`) | `production` |
+| `VITE_BASE_PATH` | *Optional.* Frontend base path for hosting under a sub‑directory; defaults to `/` | `/` or `/app/` |
+
+A sample `.env.example` is provided; copy it to `.env` (or `.env.development`) during development and adjust values.  
+In production you can either create `.env.production` or set the variables in your deployment platform (Vercel, Netlify, Docker, etc.).
+
+When you change `VITE_API_URL` in production and rebuild the app, the frontend will point to the new backend automatically.  This is the only URL you need to update after deployment.
+
+### Build & serve
+
+```bash
+# development
+npm run dev
+
+# production build (reads .env.production or your environment variables)
+npm run build
+
+# preview local build
+npm run preview
+```
+
+### Router base path
+
+If you serve the app on a path other than `/`, set `VITE_BASE_PATH` to the path and the router will automatically use it.  The Vite config also uses this value as the `base` option so static assets resolve correctly.
+
+### Linting notes
+
+Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 

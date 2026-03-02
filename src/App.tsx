@@ -36,7 +36,7 @@ export default function App() {
     <AuthProvider>
       {/* <Toaster position="top-center" /> */}
 
-      <Router>
+      <Router basename={import.meta.env.VITE_BASE_PATH || '/'}>
          <UnreadMessagesProvider>
         {/* Spinner lives inside Router so useNavigation() works */}
         <NavigationSpinner />

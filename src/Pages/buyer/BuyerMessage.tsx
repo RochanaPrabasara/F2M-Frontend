@@ -11,6 +11,12 @@ import ConversationMenu from '../../components/ConversationMenu';
 interface Participant { id: string; fullName: string; role: string; }
 interface ChatMessage { id: string; senderId: string; receiverId: string; text: string; read: boolean; createdAt: string; conversationId: string; }
 interface Conversation { conversationId: string; participant: Participant; lastMessage: { text: string; createdAt: string }; unreadCount: number; }
+type MessageWithNames = ChatMessage & {
+  senderName?: string;
+  receiverName?: string;
+  sender?: { fullName?: string; role?: string };
+  receiver?: { fullName?: string; role?: string };
+};
 
 export default function BuyerMessages() {
   const currentUser = authService.getCurrentUser();
@@ -55,6 +61,53 @@ export default function BuyerMessages() {
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const resolveNameFromMessage = useCallback((msg: MessageWithNames, participantId: string): string | null => {
+    const selected = selectedConvRef.current;
+    if (selected?.participant.id === participantId && selected.participant.fullName) return selected.participant.fullName;
+    if (msg.senderId === participantId) {
+      return msg.sender?.fullName || msg.senderName || null;
+    }
+    if (msg.receiverId === participantId) {
+      return msg.receiver?.fullName || msg.receiverName || null;
+    }
+    return null;
+  }, []);
+
+  const hydrateParticipant = useCallback(async (participantId: string) => {
+    try {
+      const res = await axiosInstance.get(`/api/messages/${participantId}`);
+      const fullName = res.data.participant?.fullName;
+      if (!fullName) return;
+
+      setConversations((prev) => prev.map((c) => (
+        c.participant.id === participantId
+          ? {
+              ...c,
+              participant: {
+                ...c.participant,
+                fullName,
+                role: res.data.participant.role || c.participant.role,
+              },
+            }
+          : c
+      )));
+
+      setSelectedConv((prev) => {
+        if (!prev || prev.participant.id !== participantId) return prev;
+        const updated = {
+          ...prev,
+          participant: {
+            ...prev.participant,
+            fullName,
+            role: res.data.participant.role || prev.participant.role,
+          },
+        };
+        selectedConvRef.current = updated;
+        return updated;
+      });
+    } catch {}
+  }, []);
+
   // Socket setup
   useEffect(() => {
     const sock = connectSocket();
@@ -62,6 +115,7 @@ export default function BuyerMessages() {
       if (!s) return;
 
       const onNewMessage = (msg: ChatMessage) => {
+        const namedMsg = msg as MessageWithNames;
         const currentConv = selectedConvRef.current;
         const isViewingThisSender = currentConv?.participant.id === msg.senderId;
         if (isViewingThisSender) {
@@ -69,28 +123,25 @@ export default function BuyerMessages() {
           axiosInstance.patch(`/api/messages/${msg.senderId}/read`).catch(() => {});
         }
         setConversations((prev) => {
-          const exists = prev.some((c) => c.participant.id === msg.senderId);
-          if (exists) {
-            return prev.map((c) => c.participant.id === msg.senderId
+          const existing = prev.find((c) => c.participant.id === msg.senderId);
+          if (existing) {
+            const updated = prev.map((c) => c.participant.id === msg.senderId
               ? { ...c, lastMessage: { text: msg.text, createdAt: msg.createdAt }, unreadCount: isViewingThisSender ? 0 : c.unreadCount + 1 }
               : c
             );
+            return [
+              updated.find((c) => c.participant.id === msg.senderId)!,
+              ...updated.filter((c) => c.participant.id !== msg.senderId),
+            ];
           }
+          const resolvedName = resolveNameFromMessage(namedMsg, msg.senderId) || 'Farmer';
           const ph: Conversation = {
             conversationId: msg.conversationId,
-            participant: { id: msg.senderId, fullName: 'New farmer message', role: 'farmer' },
+            participant: { id: msg.senderId, fullName: resolvedName, role: namedMsg.sender?.role || 'farmer' },
             lastMessage: { text: msg.text, createdAt: msg.createdAt },
             unreadCount: isViewingThisSender ? 0 : 1,
           };
-          (async () => {
-            try {
-              const res = await axiosInstance.get(`/api/messages/${msg.senderId}`);
-              if (res.data.participant?.fullName)
-                setConversations(prev => prev.map(c => c.participant.id === msg.senderId
-                  ? { ...c, participant: { ...c.participant, fullName: res.data.participant.fullName, role: res.data.participant.role || c.participant.role } }
-                  : c));
-            } catch {}
-          })();
+          if (!resolveNameFromMessage(namedMsg, msg.senderId)) hydrateParticipant(msg.senderId);
           return [ph, ...prev];
         });
       };
@@ -99,27 +150,41 @@ export default function BuyerMessages() {
       s.on('new-message', onNewMessage);
 
       const onMessageSent = (msg: ChatMessage) => {
+        const namedMsg = msg as MessageWithNames;
         setMessages((prev) => { if (prev.some((x) => x.id === msg.id)) return prev; return [...prev, msg]; });
         setConversations((prev) => {
-          const exists = prev.some((c) => c.conversationId === msg.conversationId);
-          if (exists) return prev.map((c) => c.conversationId === msg.conversationId ? { ...c, lastMessage: { text: msg.text, createdAt: msg.createdAt } } : c);
+          const existingByConversation = prev.find((c) => c.conversationId === msg.conversationId);
+          const existingByParticipant = prev.find((c) => c.participant.id === msg.receiverId);
+          const existing = existingByConversation || existingByParticipant;
+          if (existing) {
+            const updated = prev.map((c) => (
+              c.conversationId === existing.conversationId
+                ? { ...c, conversationId: msg.conversationId, lastMessage: { text: msg.text, createdAt: msg.createdAt } }
+                : c
+            ));
+            return [
+              updated.find((c) => c.conversationId === msg.conversationId || c.participant.id === msg.receiverId)!,
+              ...updated.filter((c) => c.conversationId !== msg.conversationId && c.participant.id !== msg.receiverId),
+            ];
+          }
+          const resolvedName = resolveNameFromMessage(namedMsg, msg.receiverId) || 'Farmer';
           const ph: Conversation = {
             conversationId: msg.conversationId,
-            participant: { id: msg.receiverId, fullName: 'New conversation', role: 'farmer' },
+            participant: { id: msg.receiverId, fullName: resolvedName, role: namedMsg.receiver?.role || 'farmer' },
             lastMessage: { text: msg.text, createdAt: msg.createdAt },
             unreadCount: 0,
           };
-          (async () => {
-            try {
-              const res = await axiosInstance.get(`/api/messages/${msg.receiverId}`);
-              if (res.data.participant?.fullName)
-                setConversations(prev => prev.map(c => c.participant.id === msg.receiverId
-                  ? { ...c, participant: { ...c.participant, fullName: res.data.participant.fullName, role: res.data.participant.role || c.participant.role } }
-                  : c));
-            } catch {}
-          })();
+          if (!resolveNameFromMessage(namedMsg, msg.receiverId)) hydrateParticipant(msg.receiverId);
           return [ph, ...prev];
         });
+
+        setSelectedConv((prev) => {
+          if (!prev || prev.participant.id !== msg.receiverId) return prev;
+          const updated = { ...prev, conversationId: msg.conversationId };
+          selectedConvRef.current = updated;
+          return updated;
+        });
+
         setSending(false);
       };
       if (messageSentHandlerRef.current) s.off('message-sent', messageSentHandlerRef.current);
@@ -155,7 +220,7 @@ export default function BuyerMessages() {
         if (typingStopHandlerRef.current) s.off('user-stopped-typing', typingStopHandlerRef.current);
       }
     };
-  }, []);
+  }, [hydrateParticipant, resolveNameFromMessage]);
 
   // Load conversations
   useEffect(() => {

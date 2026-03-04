@@ -154,10 +154,11 @@ export default function BuyerPublicProfile() {
           {currentUser?.id !== buyer.id && (
             <button
               onClick={handleStartChat}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all shadow-sm"
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              Message Buyer
+              <span className="hidden sm:inline">Message Buyer</span>
+              <span className="sm:hidden">Message</span>
             </button>
           )}
         </div>
@@ -166,7 +167,7 @@ export default function BuyerPublicProfile() {
       <div className="max-w-5xl mx-auto px-4 pt-6 space-y-6 relative z-10">
 
         {/* ── HERO BANNER ── */}
-        <div className="relative rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-700">
+        <div className="relative rounded-2xl overflow-hidden shadow-xl bg-linear-to-br from-blue-900 via-blue-800 to-indigo-700">
           {/* Grid texture */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -179,7 +180,7 @@ export default function BuyerPublicProfile() {
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-10 -left-10 w-56 h-56 rounded-full bg-blue-950/40 blur-2xl pointer-events-none" />
 
-          <div className="relative z-10 px-7 pt-8 pb-6">
+          <div className="relative z-10 px-4 sm:px-7 pt-8 pb-6">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
 
               {/* Avatar */}
@@ -228,7 +229,7 @@ export default function BuyerPublicProfile() {
             </div>
 
             {/* Stats strip */}
-            <div className="grid grid-cols-3 border-t border-white/10 bg-white/[0.06] backdrop-blur-sm -mx-7 px-7 mt-6">
+            <div className="grid grid-cols-3 border-t border-white/10 bg-white/6 backdrop-blur-sm -mx-4 sm:-mx-7 px-4 sm:px-7 mt-6">
               {[
                 { val: buyer.totalRequests, lbl: 'Active Requests', icon: <Megaphone className="w-4 h-4" /> },
                 { val: buyer.completedOrders, lbl: 'Orders Completed', icon: <TrendingUp className="w-4 h-4" /> },
@@ -236,7 +237,7 @@ export default function BuyerPublicProfile() {
               ].map((s, i) => (
                 <div key={i} className={`py-4 text-center ${i < 2 ? 'border-r border-white/10' : ''}`}>
                   <span className="flex items-center justify-center text-xl font-bold text-white">{s.val}</span>
-                  <span className="text-[0.68rem] uppercase tracking-widest text-white/50">{s.lbl}</span>
+                  <span className="text-[0.62rem] sm:text-[0.68rem] uppercase tracking-widest text-white/50">{s.lbl}</span>
                 </div>
               ))}
             </div>
@@ -269,7 +270,7 @@ export default function BuyerPublicProfile() {
                   className="group bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
                 >
                   {/* Colored accent top */}
-                  <div className="h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                  <div className="h-1 bg-linear-to-r from-blue-500 to-indigo-500" />
 
                   {/* Header strip with crop name + time */}
                   <div className="px-5 pt-4 pb-3 flex items-start justify-between gap-2 border-b border-stone-50">

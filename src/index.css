@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+html,
+body,
+#root {
+	width: 100%;
+	overflow-x: hidden;
+}
+
+* {
+	min-width: 0;
+}
+
+button,
+a,
+summary,
+[role='button'],
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+label[for] {
+	cursor: pointer;
+}
+
+button:disabled,
+input:disabled {
+	cursor: not-allowed;
+}
+
+html::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background: rgba(255, 255, 255, 0);
+	backdrop-filter: blur(0px);
+	transition: background 220ms ease, backdrop-filter 220ms ease;
+	z-index: 9999;
+}
+
+html.lang-switching::before {
+	background: rgba(255, 255, 255, 0.12);
+	backdrop-filter: blur(1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html::before {
+		transition: none;
+	}
+
+	html.lang-switching::before {
+		background: rgba(255, 255, 255, 0);
+		backdrop-filter: blur(0px);
+	}
+}

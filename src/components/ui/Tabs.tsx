@@ -10,11 +10,22 @@ interface TabsProps {
   tabs: Tab[];
   activeTab: string;
   onChange: (id: string) => void;
+  mobileLayout?: 'scroll' | 'grid';
 }
 
-export function Tabs({ tabs, activeTab, onChange }: TabsProps) {
+export function Tabs({ tabs, activeTab, onChange, mobileLayout = 'scroll' }: TabsProps) {
+  const useMobileGrid = mobileLayout === 'grid';
+
   return (
-    <div className="flex space-x-1 border-b border-stone-200 mb-6">
+    <div className={`mb-6 ${useMobileGrid ? '' : '-mx-2 px-2 overflow-x-auto'}`}>
+      <div
+        className={`
+          border-b border-stone-200
+          ${useMobileGrid
+            ? 'grid grid-cols-2 gap-x-1 sm:flex sm:w-max sm:min-w-full sm:space-x-1'
+            : 'flex w-max min-w-full space-x-1'}
+        `}
+      >
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
@@ -22,7 +33,8 @@ export function Tabs({ tabs, activeTab, onChange }: TabsProps) {
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={`
-              relative px-6 py-3 text-sm font-medium transition-colors
+              relative px-3 sm:px-6 py-3 text-sm font-medium transition-colors
+              ${useMobileGrid ? 'text-center' : 'whitespace-nowrap'}
               ${isActive ? 'text-green-700' : 'text-stone-600 hover:text-stone-800'}
             `}
           >
@@ -38,6 +50,7 @@ export function Tabs({ tabs, activeTab, onChange }: TabsProps) {
           </button>
         );
       })}
+      </div>
     </div>
   );
 }

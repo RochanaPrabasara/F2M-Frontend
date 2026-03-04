@@ -1,7 +1,8 @@
 // src/Pages/farmer/FarmerMessages.tsx
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Search, Send, MessageSquare, Leaf, Trash2 } from 'lucide-react';
+import { Search, Send, MessageSquare, Leaf, Trash2, ChevronLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { connectSocket, getSocket } from '../../services/socket.service';
 import axiosInstance from '../../config/axios.config';
 import authService from '../../services/auth.service';
@@ -19,6 +20,7 @@ type MessageWithNames = ChatMessage & {
 };
 
 export default function FarmerMessages() {
+  const { t } = useTranslation();
   const currentUser = authService.getCurrentUser();
   const myId = currentUser?.id || '';
   const { clearUnread, markRead, initUnread, setOpenConversation } = useUnreadMessages();
@@ -180,7 +182,7 @@ export default function FarmerMessages() {
       messageSentHandlerRef.current = onMessageSent;
       s.on('message-sent', onMessageSent);
 
-      const onMessageError = () => { setSending(false); alert('Failed to send message. Please try again.'); };
+      const onMessageError = () => { setSending(false); alert(t('Failed to send message. Please try again.')); };
       if (messageErrorHandlerRef.current) s.off('message-error', messageErrorHandlerRef.current);
       messageErrorHandlerRef.current = onMessageError;
       s.on('message-error', onMessageError);
@@ -209,7 +211,7 @@ export default function FarmerMessages() {
         if (typingStopHandlerRef.current) s.off('user-stopped-typing', typingStopHandlerRef.current);
       }
     };
-  }, [hydrateParticipant, resolveNameFromMessage]);
+  }, [hydrateParticipant, resolveNameFromMessage, t]);
 
   // Load conversations
   useEffect(() => {
@@ -247,14 +249,14 @@ export default function FarmerMessages() {
       const placeholder: Conversation = {
         conversationId: [myId, id].sort().join('_'),
         participant: { id, fullName, role: 'buyer' },
-        lastMessage: { text: 'Starting new conversation...', createdAt: new Date().toISOString() },
+        lastMessage: { text: t('Starting new conversation...'), createdAt: new Date().toISOString() },
         unreadCount: 0,
       };
       setSelectedConvAndRef(placeholder);
       return [placeholder, ...prev];
     });
     navigate(location.pathname, { replace: true, state: null });
-  }, [convLoading, location.state, navigate, myId]);
+  }, [convLoading, location.state, navigate, myId, t]);
 
   // Load messages when conversation selected
   useEffect(() => {
@@ -283,7 +285,7 @@ export default function FarmerMessages() {
       if (selectedConvRef.current?.conversationId === conv.conversationId) { setSelectedConvAndRef(null); setMessages([]); }
     } catch (err) {
       console.error('Failed to delete conversation:', err);
-      alert('Failed to delete conversation. Please try again.');
+      alert(t('Failed to delete conversation. Please try again.'));
     } finally { setDeletingId(null); }
   };
 
@@ -291,12 +293,12 @@ export default function FarmerMessages() {
     const text = input.trim();
     if (!text || !selectedConv || sending) return;
     const socket = getSocket();
-    if (!socket || !socket.connected) { alert('Connection lost. Please refresh the page.'); return; }
+    if (!socket || !socket.connected) { alert(t('Connection lost. Please refresh the page.')); return; }
     setSending(true);
     setInput('');
     socket.emit('typing-stop', { receiverId: selectedConv.participant.id });
     socket.emit('send-message', { receiverId: selectedConv.participant.id, text });
-  }, [input, selectedConv, sending]);
+  }, [input, selectedConv, sending, t]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
@@ -313,8 +315,8 @@ export default function FarmerMessages() {
   const formatDate = (iso: string) => {
     const d = new Date(iso); const today = new Date(); const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
-    if (d.toDateString() === today.toDateString()) return 'Today';
-    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    if (d.toDateString() === today.toDateString()) return t('Today');
+    if (d.toDateString() === yesterday.toDateString()) return t('Yesterday');
     return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
   };
 
@@ -328,7 +330,7 @@ export default function FarmerMessages() {
   const filteredConvs = conversations.filter(c => c.participant.fullName.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)] bg-stone-50 rounded-2xl overflow-hidden shadow-sm border border-stone-200">
+    <div className="flex flex-col h-[calc(100dvh-7rem)] sm:h-[calc(100vh-120px)] bg-stone-50 rounded-2xl overflow-hidden shadow-sm border border-stone-200">
 
       {/* Delete confirm modal */}
       {confirmDelete && (
@@ -351,7 +353,7 @@ export default function FarmerMessages() {
 
       <div className="flex h-full min-h-0">
         {/* Sidebar */}
-        <div className="w-80 shrink-0 flex flex-col border-r border-stone-200 bg-white">
+        <div className={`${selectedConv ? 'hidden md:flex' : 'flex'} w-full md:w-80 md:shrink-0 flex-col border-r border-stone-200 bg-white`}>
           <div className="px-5 py-4 border-b border-stone-100">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
@@ -390,7 +392,7 @@ export default function FarmerMessages() {
                     className={`relative group border-b border-stone-50 transition-all ${isActive ? 'bg-green-50 border-l-2 border-l-green-600' : 'hover:bg-stone-50'} ${isDeleting ? 'opacity-40 pointer-events-none' : ''}`}
                   >
                     <button onClick={() => setSelectedConvAndRef(conv)} className="w-full px-4 py-3.5 flex items-start gap-3 text-left">
-                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">
                         {conv.participant.fullName.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0 pr-8">
@@ -401,7 +403,7 @@ export default function FarmerMessages() {
                         <div className="flex justify-between items-center">
                           <p className="text-xs text-stone-500 truncate pr-2">{conv.lastMessage.text}</p>
                           {conv.unreadCount > 0 && (
-                            <span className="flex-shrink-0 bg-green-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                            <span className="shrink-0 bg-green-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                               {conv.unreadCount > 9 ? '9+' : conv.unreadCount}
                             </span>
                           )}
@@ -426,11 +428,19 @@ export default function FarmerMessages() {
         </div>
 
         {/* Chat panel */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className={`${selectedConv ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0`}>
           {selectedConv ? (
             <>
-              <div className="flex items-center gap-3 px-6 py-4 bg-white border-b border-stone-100 shadow-sm">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
+              <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-stone-100 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setSelectedConvAndRef(null)}
+                  className="md:hidden w-8 h-8 rounded-lg border border-stone-200 text-stone-600 flex items-center justify-center"
+                  aria-label="Back to conversations"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="w-9 h-9 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">
                   {selectedConv.participant.fullName.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -442,7 +452,7 @@ export default function FarmerMessages() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-4 space-y-1 bg-stone-50">
+              <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-1 bg-stone-50">
                 {msgLoading ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="w-6 h-6 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
@@ -469,14 +479,14 @@ export default function FarmerMessages() {
                         const showAvatar = !isMine && (!prevMsg || prevMsg.senderId !== msg.senderId);
                         return (
                           <div key={msg.id} className={`flex items-end gap-2 mb-1 ${isMine ? 'flex-row-reverse' : 'flex-row'}`}>
-                            <div className="w-6 flex-shrink-0">
+                            <div className="w-6 shrink-0">
                               {!isMine && showAvatar && (
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-[10px] font-bold">
+                                <div className="w-6 h-6 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-[10px] font-bold">
                                   {selectedConv.participant.fullName.charAt(0)}
                                 </div>
                               )}
                             </div>
-                            <div className={`max-w-[65%] group ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
+                            <div className={`max-w-[85%] sm:max-w-[65%] group ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
                               <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${isMine ? 'bg-green-600 text-white rounded-br-sm' : 'bg-white text-stone-800 border border-stone-100 rounded-bl-sm'}`}>
                                 {msg.text}
                               </div>
@@ -492,7 +502,7 @@ export default function FarmerMessages() {
                 )}
                 {partnerTyping && (
                   <div className="flex items-end gap-2 mb-1">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                    <div className="w-6 h-6 rounded-full bg-linear-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
                       {selectedConv.participant.fullName.charAt(0)}
                     </div>
                     <div className="bg-white border border-stone-100 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
@@ -507,12 +517,12 @@ export default function FarmerMessages() {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="px-4 py-3 bg-white border-t border-stone-100">
+              <div className="px-3 sm:px-4 py-3 bg-white border-t border-stone-100">
                 <div className="flex items-center gap-2 bg-stone-50 rounded-xl border border-stone-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-400 transition-all">
                   <input ref={inputRef} type="text" value={input} onChange={handleInputChange} onKeyDown={handleKeyDown}
                     placeholder="Type a message…" className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none py-1.5" />
                   <button onClick={sendMessage} disabled={!input.trim() || sending}
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${input.trim() && !sending ? 'bg-green-600 text-white hover:bg-green-700 shadow-sm' : 'bg-stone-200 text-stone-400 cursor-not-allowed'}`}>
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all shrink-0 ${input.trim() && !sending ? 'bg-green-600 text-white hover:bg-green-700 shadow-sm' : 'bg-stone-200 text-stone-400 cursor-not-allowed'}`}>
                     {sending ? <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Send className="h-3.5 w-3.5" />}
                   </button>
                 </div>

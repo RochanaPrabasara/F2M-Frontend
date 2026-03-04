@@ -156,10 +156,11 @@ export default function FarmerPublicProfile() {
           {currentUser?.id !== farmer.id && (
             <button
               onClick={handleStartChat}
-              className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold transition-all shadow-sm"
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              Message Farmer
+              <span className="hidden sm:inline">Message Farmer</span>
+              <span className="sm:hidden">Message</span>
             </button>
           )}
         </div>
@@ -168,7 +169,7 @@ export default function FarmerPublicProfile() {
       <div className="max-w-5xl mx-auto px-4 pt-6 space-y-6 relative z-10">
 
         {/* ── HERO BANNER ── */}
-        <div className="relative rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-green-900 via-green-800 to-green-700">
+        <div className="relative rounded-2xl overflow-hidden shadow-xl bg-linear-to-br from-green-900 via-green-800 to-green-700">
           {/* Grid texture */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.04]"
@@ -181,7 +182,7 @@ export default function FarmerPublicProfile() {
           <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-green-400/10 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-10 -left-10 w-56 h-56 rounded-full bg-green-950/40 blur-2xl pointer-events-none" />
 
-          <div className="relative z-10 px-7 pt-8 pb-6">
+          <div className="relative z-10 px-4 sm:px-7 pt-8 pb-6">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
 
               {/* Avatar */}
@@ -230,7 +231,7 @@ export default function FarmerPublicProfile() {
             </div>
 
             {/* Stats strip */}
-            <div className="grid grid-cols-3 border-t border-white/10 bg-white/[0.06] backdrop-blur-sm -mx-7 px-7 mt-6 pt-0 rounded-b-none">
+            <div className="grid grid-cols-3 border-t border-white/10 bg-white/6 backdrop-blur-sm -mx-4 sm:-mx-7 px-4 sm:px-7 mt-6 pt-0 rounded-b-none">
               {[
                 { val: farmer.totalListings, lbl: 'Active Listings', icon: <Package className="w-4 h-4" /> },
                 { val: farmer.completedOrders, lbl: 'Orders Completed', icon: <TrendingUp className="w-4 h-4" /> },
@@ -238,7 +239,7 @@ export default function FarmerPublicProfile() {
               ].map((s, i) => (
                 <div key={i} className={`py-4 text-center ${i < 2 ? 'border-r border-white/10' : ''}`}>
                   <span className="flex items-center justify-center text-xl font-bold text-white">{s.val}</span>
-                  <span className="text-[0.68rem] uppercase tracking-widest text-white/50">{s.lbl}</span>
+                  <span className="text-[0.62rem] sm:text-[0.68rem] uppercase tracking-widest text-white/50">{s.lbl}</span>
                 </div>
               ))}
             </div>
@@ -279,7 +280,7 @@ export default function FarmerPublicProfile() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
                     {/* Grade badge */}
                     <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-stone-700 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
                       Grade {listing.quality}

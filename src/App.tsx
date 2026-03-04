@@ -11,6 +11,8 @@ import { UnreadMessagesProvider } from './context/UnreadMessagesContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 import NavigationSpinner from './components/ui/NavigationSpinner';
+import { GlobalTextTranslator } from './components/GlobalTextTranslator';
+import ScrollToTop from './components/ScrollToTop';
 
 // Farmer pages
 import FarmerDashboard from './Pages/farmer/FarmerDashboard';
@@ -36,10 +38,12 @@ export default function App() {
     <AuthProvider>
       {/* <Toaster position="top-center" /> */}
 
-      <Router basename={import.meta.env.VITE_BASE_PATH || '/'}>
-         <UnreadMessagesProvider>
-        {/* Spinner lives inside Router so useNavigation() works */}
-        <NavigationSpinner />
+      <GlobalTextTranslator>
+        <Router basename={import.meta.env.VITE_BASE_PATH || '/'}>
+          <UnreadMessagesProvider>
+            {/* Spinner lives inside Router so useNavigation() works */}
+            <NavigationSpinner />
+            <ScrollToTop />
 
         <Routes>
           {/* Public */}
@@ -108,9 +112,10 @@ export default function App() {
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        </UnreadMessagesProvider>
-      </Router>
+            </Routes>
+          </UnreadMessagesProvider>
+        </Router>
+      </GlobalTextTranslator>
     </AuthProvider>
   );
 }

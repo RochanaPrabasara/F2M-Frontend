@@ -1,7 +1,7 @@
 // src/Pages/buyer/BuyerMessage.tsx
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Search, Send, MessageSquare, ShoppingBag, Trash2 } from 'lucide-react';
+import { Search, Send, MessageSquare, ShoppingBag, Trash2, ChevronLeft } from 'lucide-react';
 import { connectSocket, getSocket } from '../../services/socket.service';
 import axiosInstance from '../../config/axios.config';
 import authService from '../../services/auth.service';
@@ -339,7 +339,7 @@ export default function BuyerMessages() {
   const filteredConvs = conversations.filter(c => c.participant.fullName.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)] bg-stone-50 rounded-2xl overflow-hidden shadow-sm border border-stone-200">
+    <div className="flex flex-col h-[calc(100dvh-7rem)] sm:h-[calc(100vh-120px)] bg-stone-50 rounded-2xl overflow-hidden shadow-sm border border-stone-200">
 
       {/* Delete confirm modal */}
       {confirmDelete && (
@@ -362,7 +362,7 @@ export default function BuyerMessages() {
 
       <div className="flex h-full min-h-0">
         {/* Sidebar */}
-        <div className="w-80 shrink-0 flex flex-col border-r border-stone-200 bg-white">
+        <div className={`${selectedConv ? 'hidden md:flex' : 'flex'} w-full md:w-80 md:shrink-0 flex-col border-r border-stone-200 bg-white`}>
           <div className="px-5 py-4 border-b border-stone-100">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
@@ -437,10 +437,18 @@ export default function BuyerMessages() {
         </div>
 
         {/* Chat panel */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className={`${selectedConv ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0`}>
           {selectedConv ? (
             <>
-              <div className="flex items-center gap-3 px-6 py-4 bg-white border-b border-stone-100 shadow-sm">
+              <div className="flex items-center gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-stone-100 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setSelectedConvAndRef(null)}
+                  className="md:hidden w-8 h-8 rounded-lg border border-stone-200 text-stone-600 flex items-center justify-center"
+                  aria-label="Back to conversations"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
                 <div className="w-9 h-9 rounded-full bg-linear-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-semibold text-sm shrink-0">
                   {selectedConv.participant.fullName.charAt(0).toUpperCase()}
                 </div>
@@ -453,7 +461,7 @@ export default function BuyerMessages() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-4 space-y-1 bg-stone-50">
+              <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-1 bg-stone-50">
                 {msgLoading ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="w-6 h-6 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
@@ -487,7 +495,7 @@ export default function BuyerMessages() {
                                 </div>
                               )}
                             </div>
-                            <div className={`max-w-[65%] group ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
+                            <div className={`max-w-[85%] sm:max-w-[65%] group ${isMine ? 'items-end' : 'items-start'} flex flex-col`}>
                               <div className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${isMine ? 'bg-amber-500 text-white rounded-br-sm' : 'bg-white text-stone-800 border border-stone-100 rounded-bl-sm'}`}>
                                 {msg.text}
                               </div>
@@ -518,7 +526,7 @@ export default function BuyerMessages() {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="px-4 py-3 bg-white border-t border-stone-100">
+              <div className="px-3 sm:px-4 py-3 bg-white border-t border-stone-100">
                 <div className="flex items-center gap-2 bg-stone-50 rounded-xl border border-stone-200 px-3 py-1.5 focus-within:ring-2 focus-within:ring-amber-500 focus-within:border-amber-400 transition-all">
                   <input ref={inputRef} type="text" value={input} onChange={handleInputChange} onKeyDown={handleKeyDown}
                     placeholder="Type a message…" className="flex-1 bg-transparent text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none py-1.5" />

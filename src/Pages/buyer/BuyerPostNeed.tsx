@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { Modal } from '../../components/ui/Modal';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
@@ -18,6 +19,7 @@ import {
 import type { BuyerNeed } from '../../services/buyerNeed.service';
 
 export default function BuyerPostNeed() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [needs, setNeeds]             = useState<BuyerNeed[]>([]);
   const [loading, setLoading]         = useState(true);
@@ -40,7 +42,7 @@ export default function BuyerPostNeed() {
         if (!cancelled) setNeeds(myNeeds);
       } catch (err) {
         if (!cancelled) {
-          const msg = err instanceof Error ? err.message : 'Failed to load requests';
+          const msg = err instanceof Error ? err.message : t('Failed to load requests');
           toast.error(msg);
         }
       } finally {
@@ -64,7 +66,7 @@ export default function BuyerPostNeed() {
   }, [editing]);
 
   const handleSubmitNeed = async (data: BuyerNeedFormValues) => {
-    const toastId = toast.loading(editing ? 'Updating request…' : 'Posting request…');
+    const toastId = toast.loading(editing ? t('Updating request…') : t('Posting request…'));
     try {
       setSubmitting(true);
       const payload = {
@@ -80,17 +82,17 @@ export default function BuyerPostNeed() {
       if (editing) {
         const updated = await updateBuyerNeed(editing.id, payload);
         setNeeds((prev) => prev.map((n) => (n.id === updated.id ? updated : n)));
-        toast.success(`"${updated.cropName}" request updated successfully!`, { id: toastId });
+        toast.success(t('"{{name}}" request updated successfully!', { name: updated.cropName }), { id: toastId });
       } else {
         const created = await createBuyerNeed(payload);
         setNeeds((prev) => [created, ...prev]);
-        toast.success(`"${created.cropName}" request posted !!!`, { id: toastId });
+        toast.success(t('"{{name}}" request posted !!!', { name: created.cropName }), { id: toastId });
       }
 
       setIsModalOpen(false);
       setEditing(null);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to save request';
+      const msg = err instanceof Error ? err.message : t('Failed to save request');
       toast.error(msg, { id: toastId });
     } finally {
       setSubmitting(false);
@@ -107,17 +109,17 @@ export default function BuyerPostNeed() {
 
   const confirmDelete = async () => {
     if (!deletingId) return;
-    const needName = needs.find((n) => n.id === deletingId)?.cropName ?? 'Request';
-    const toastId = toast.loading('Deleting request…');
+    const needName = needs.find((n) => n.id === deletingId)?.cropName ?? t('Request');
+    const toastId = toast.loading(t('Deleting request…'));
     try {
       setDeleting(true);
       await deleteBuyerNeed(deletingId);
       setNeeds((prev) => prev.filter((x) => x.id !== deletingId));
       setConfirmOpen(false);
       setDeletingId(null);
-      toast.success(`"${needName}" request has been deleted.`, { id: toastId });
+      toast.success(t('"{{name}}" request has been deleted.', { name: needName }), { id: toastId });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to delete request';
+      const msg = err instanceof Error ? err.message : t('Failed to delete request');
       toast.error(msg, { id: toastId });
     } finally {
       setDeleting(false);
@@ -125,17 +127,17 @@ export default function BuyerPostNeed() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">My Requests</h1>
-          <p className="text-stone-500">Post what you need and let farmers come to you</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-stone-900">My Requests</h1>
+          <p className="text-sm sm:text-base text-stone-500">Post what you need and let farmers come to you</p>
         </div>
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="inline-flex items-center px-4 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700"
+          className="inline-flex w-full sm:w-auto justify-center items-center px-4 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700"
         >
           <Plus className="h-4 w-4 mr-2" />
           Post New Request
@@ -143,7 +145,7 @@ export default function BuyerPostNeed() {
       </div>
 
       {/* Info Card */}
-      <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+      <div className="bg-green-50 border border-green-200 rounded-xl p-4 sm:p-6">
         <h3 className="font-semibold text-green-900 mb-2">How it works</h3>
         <ul className="text-sm text-green-800 space-y-1">
           <li>• Post what vegetables you need with your budget</li>

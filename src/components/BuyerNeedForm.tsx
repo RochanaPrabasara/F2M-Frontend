@@ -201,7 +201,7 @@ export function BuyerNeedForm({
       </div>
 
       {/* Quantity + Unit */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-stone-700 mb-1">
             Quantity <span className="text-red-500">*</span>
@@ -306,18 +306,18 @@ export function BuyerNeedForm({
       </p>
 
       {/* Actions */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-stone-100">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-stone-100">
         <button
           type="button"
           onClick={onCancel}
-          className="inline-flex items-center px-4 py-2 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-50 active:bg-stone-100 transition-colors"
+          className="inline-flex w-full sm:w-auto justify-center items-center px-4 py-2 rounded-lg border border-stone-300 text-sm font-medium text-stone-700 hover:bg-stone-50 active:bg-stone-100 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isLoading}
-          className="inline-flex items-center px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700 active:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex w-full sm:w-auto justify-center items-center px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700 active:bg-green-800 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
           {isLoading
             ? 'Posting…'

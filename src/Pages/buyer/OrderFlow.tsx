@@ -46,6 +46,10 @@ export default function OrderFlow() {
   const [copiedField, setCopiedField]               = useState<string | null>(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [currentStep]);
+
+  useEffect(() => {
     const loadData = async () => {
       if (!listingId) { navigate('/buyer/browse'); return; }
       try {
@@ -174,10 +178,10 @@ export default function OrderFlow() {
         }
       `}</style>
 
-      <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-green-50/30 pb-16">
+      <div className="min-h-screen bg-linear-to-br from-stone-50 via-white to-green-50/30 pb-16">
 
         {/* ── Sticky Progress Header ─────────────────────────────────────── */}
-        <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-100 shadow-sm">
+        <div className="fixed top-14 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-100 shadow-sm lg:sticky lg:top-0 lg:left-auto lg:right-auto">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
 
             <button
@@ -187,6 +191,19 @@ export default function OrderFlow() {
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
               {currentStep === 1 ? 'Back to Browse' : 'Previous Step'}
             </button>
+
+            <div className="sm:hidden mb-4">
+              <div className="flex items-center justify-between text-[11px] font-semibold text-stone-500 mb-1.5">
+                <span>Step {currentStep} of {STEPS.length}</span>
+                <span>{STEPS[currentStep - 1]?.title}</span>
+              </div>
+              <div className="h-2 rounded-full bg-stone-200 overflow-hidden">
+                <div
+                  className="h-full bg-green-600 transition-all duration-300"
+                  style={{ width: `${(currentStep / STEPS.length) * 100}%` }}
+                />
+              </div>
+            </div>
 
             {/* Step indicators */}
             <div className="relative">
@@ -210,7 +227,7 @@ export default function OrderFlow() {
                       `}>
                         {done ? <Check className="h-5 w-5" /> : <Icon className="h-4 w-4" />}
                       </div>
-                      <span className={`text-xs font-semibold hidden sm:block transition-colors ${active ? 'text-green-700' : 'text-stone-400'}`}>
+                      <span className={`text-[11px] sm:text-xs font-semibold transition-colors ${active ? 'text-green-700' : 'text-stone-400'}`}>
                         {step.title}
                       </span>
                     </div>
@@ -222,7 +239,7 @@ export default function OrderFlow() {
         </div>
 
         {/* ── Page Content ───────────────────────────────────────────────── */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-52 lg:pt-10">
 
           {/* ════ STEP 1 · REVIEW ════ */}
           {currentStep === 1 && (
@@ -267,14 +284,14 @@ export default function OrderFlow() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex items-center gap-3 bg-stone-50 rounded-xl px-4 py-3 border border-stone-100">
-                      <Scale className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <Scale className="h-4 w-4 text-green-600 shrink-0" />
                       <div>
                         <p className="text-xs text-stone-400 font-medium">Available</p>
                         <p className="text-sm font-semibold text-stone-800">{listing.quantity} {listing.unit}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 bg-stone-50 rounded-xl px-4 py-3 border border-stone-100">
-                      <MapPin className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <MapPin className="h-4 w-4 text-green-600 shrink-0" />
                       <div>
                         <p className="text-xs text-stone-400 font-medium">Location</p>
                         <p className="text-sm font-semibold text-stone-800 truncate">{listing.location}</p>
@@ -468,7 +485,7 @@ export default function OrderFlow() {
                       <img
                         src={listing.image || 'https://via.placeholder.com/100'}
                         alt={listing.name}
-                        className="w-20 h-20 rounded-xl object-cover border border-stone-100 flex-shrink-0"
+                        className="w-20 h-20 rounded-xl object-cover border border-stone-100 shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <h4 className="text-lg font-bold text-stone-900">{listing.name}</h4>
@@ -513,7 +530,7 @@ export default function OrderFlow() {
                   </div>
 
                   <div className="rounded-2xl p-5 bg-amber-50 border border-amber-200 flex gap-3">
-                    <CreditCard className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <CreditCard className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
                     <div>
                       <p className="text-sm font-semibold text-amber-800">Payment after order</p>
                       <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
@@ -605,7 +622,7 @@ export default function OrderFlow() {
                           </div>
                           <button
                             onClick={() => copyToClipboard(value, field)}
-                            className="flex-shrink-0 w-8 h-8 rounded-lg bg-white border border-green-200 flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
+                            className="shrink-0 w-8 h-8 rounded-lg bg-white border border-green-200 flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
                             title="Copy"
                           >
                             {copiedField === field
@@ -618,7 +635,7 @@ export default function OrderFlow() {
                     </div>
 
                     <div className="flex items-start gap-2.5 bg-amber-50 border border-amber-100 rounded-xl p-4">
-                      <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                       <p className="text-xs text-amber-700 leading-relaxed">
                         After making the transfer, go to <strong>My Orders</strong> and upload the payment screenshot or bank receipt.
                       </p>

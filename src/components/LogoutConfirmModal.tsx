@@ -1,5 +1,6 @@
 // src/components/LogoutConfirmModal.tsx
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from './ui/Modal';
 
 interface LogoutConfirmModalProps {
@@ -15,15 +16,17 @@ export function LogoutConfirmModal({
   onConfirm,
   isLoggingOut,
 }: LogoutConfirmModalProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Confirm Logout"
+      title={t('Confirm Logout')}
     >
       <div className="space-y-6 pt-2">
         <p className="text-stone-600">
-          Are you sure you want to log out of your account?
+          {t('Are you sure you want to log out of your account?')}
         </p>
 
         <div className="flex items-center justify-end gap-3">
@@ -39,7 +42,7 @@ export function LogoutConfirmModal({
               transition-colors
             `}
           >
-            Cancel
+            {t('Cancel')}
           </button>
 
           <button
@@ -56,7 +59,7 @@ export function LogoutConfirmModal({
             `}
           >
             {isLoggingOut && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isLoggingOut ? 'Logging out...' : 'Yes, Log Out'}
+            {isLoggingOut ? t('Logging out...') : t('Yes, Log Out')}
           </button>
         </div>
       </div>

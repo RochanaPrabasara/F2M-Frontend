@@ -129,7 +129,7 @@ export function BankAccountManager({
 
         <button
           onClick={openAddModal}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+          className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
         >
           <Plus className="w-4 h-4" />
           Add Account
@@ -137,7 +137,7 @@ export function BankAccountManager({
       </div>
 
       {accounts.length === 0 ? (
-        <div className="bg-gray-50/70 border border-dashed border-gray-300 rounded-2xl p-12 text-center">
+        <div className="bg-gray-50/70 border border-dashed border-gray-300 rounded-2xl p-6 sm:p-12 text-center">
           <Building className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h4 className="text-lg font-semibold text-gray-800 mb-2">No bank accounts yet</h4>
           <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -145,7 +145,7 @@ export function BankAccountManager({
           </p>
           <button
             onClick={openAddModal}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl shadow-md transition-all hover:shadow-lg active:scale-[0.98]"
+            className="inline-flex w-full sm:w-auto items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl shadow-md transition-all hover:shadow-lg active:scale-[0.98]"
           >
             <Plus className="w-5 h-5" />
             Add First Account
@@ -162,12 +162,12 @@ export function BankAccountManager({
                 className={`
                   p-5 rounded-xl border transition-all duration-200
                   ${acc.isPrimary
-                    ? 'border-green-500/60 bg-gradient-to-r from-green-50 to-white shadow-green-100/50'
+                    ? 'border-green-500/60 bg-linear-to-r from-green-50 to-white shadow-green-100/50'
                     : 'border-gray-200 hover:border-gray-300 hover:shadow-md'}
                   ${!acc.isActive ? 'opacity-65 grayscale-[0.4]' : ''}
                 `}
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                   <div className="flex items-start gap-4 flex-1 min-w-0">
                     {bankInfo?.logo ? (
                       <div className="w-14 h-14 shrink-0 rounded-lg overflow-hidden border border-gray-200 bg-white flex items-center justify-center p-1.5 shadow-sm">
@@ -217,7 +217,7 @@ export function BankAccountManager({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 -mr-2 flex-shrink-0">
+                  <div className="flex w-full sm:w-auto items-center justify-end gap-1 sm:-mr-2 shrink-0 border-t sm:border-t-0 border-gray-100 pt-3 sm:pt-0">
                     {!acc.isPrimary && acc.isActive && (
                       <button
                         onClick={() => onSetPrimary(acc.id)}
@@ -352,7 +352,7 @@ export function BankAccountManager({
             🔒 Your bank details are encrypted and will only be shared with verified buyers after an order is confirmed.
           </div>
 
-          <div className="flex gap-4 pt-4 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t border-gray-200">
             <button
               onClick={() => {
                 setShowModal(false);

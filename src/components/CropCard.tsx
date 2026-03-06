@@ -116,7 +116,7 @@ export function CropCard({
 
       <div className="p-5 flex-1 flex flex-col">
         {/* Farmer info + name moved here – always visible when browsing */}
-        <div className="flex justify-between items-start gap-3 mb-2">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-3 mb-2">
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-bold text-stone-900 leading-tight mb-1">
               {listing.name}
@@ -128,17 +128,17 @@ export function CropCard({
                 className="inline-flex items-center gap-2 text-sm text-green-700 hover:text-green-800 group"
                 title="View farmer's profile"
               >
-                <div className="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 border border-green-100 shadow-sm">
+                <div className="w-6 h-6 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100 shadow-sm">
                   <User className="h-3.5 w-3.5 text-green-700" />
                 </div>
-                <span className="font-medium truncate max-w-[180px] sm:max-w-[240px] group-hover:underline">
+                <span className="font-medium truncate max-w-45 sm:max-w-60 group-hover:underline">
                   {listing.farmer.fullName}
                 </span>
               </Link>
             )}
           </div>
 
-          <span className="text-lg font-bold text-green-700 shrink-0">
+          <span className="text-base sm:text-lg font-bold text-green-700 shrink-0 self-start sm:self-auto">
             LKR {listing.price}
             <span className="text-xs text-stone-500 font-normal">/{listing.unit}</span>
           </span>

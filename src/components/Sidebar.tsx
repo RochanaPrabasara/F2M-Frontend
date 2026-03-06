@@ -5,12 +5,15 @@ import {
   LayoutDashboard, Sprout, ShoppingBag, MessageSquare,
   User, LogOut, Search, Megaphone, Loader2, Menu, X, ChevronRight,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/useAuth';
 import { LogoutConfirmModal } from './LogoutConfirmModal';
 import { useUnreadMessages } from '../context/UnreadMessagesContext';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const { totalUnread } = useUnreadMessages();
 
@@ -35,21 +38,21 @@ export default function Sidebar() {
   const badgeLabel = badgeCount > 99 ? '99+' : badgeCount > 0 ? String(badgeCount) : null;
 
   const farmerLinks = [
-    { icon: LayoutDashboard, label: 'Dashboard',   path: '/farmer/dashboard', badge: false },
-    { icon: Megaphone,       label: 'Buyer Needs', path: '/farmer/needs',     badge: false },
-    { icon: Sprout,          label: 'My Listings', path: '/farmer/listings',  badge: false },
-    { icon: ShoppingBag,     label: 'Orders',      path: '/farmer/orders',    badge: false },
-    { icon: MessageSquare,   label: 'Messages',    path: '/farmer/messages',  badge: true  },
-    { icon: User,            label: 'Profile',     path: '/farmer/profile',   badge: false },
+    { icon: LayoutDashboard, label: t('Dashboard'),   path: '/farmer/dashboard', badge: false },
+    { icon: Megaphone,       label: t('Buyer Needs'), path: '/farmer/needs',     badge: false },
+    { icon: Sprout,          label: t('My Listings'), path: '/farmer/listings',  badge: false },
+    { icon: ShoppingBag,     label: t('Orders'),      path: '/farmer/orders',    badge: false },
+    { icon: MessageSquare,   label: t('Messages'),    path: '/farmer/messages',  badge: true  },
+    { icon: User,            label: t('Profile'),     path: '/farmer/profile',   badge: false },
   ];
 
   const buyerLinks = [
-    { icon: LayoutDashboard, label: 'Dashboard',    path: '/buyer/dashboard',  badge: false },
-    { icon: Search,          label: 'Browse Crops', path: '/buyer/browse',     badge: false },
-    { icon: Megaphone,       label: 'Post Need',    path: '/buyer/needs',      badge: false },
-    { icon: ShoppingBag,     label: 'My Orders',    path: '/buyer/orders',     badge: false },
-    { icon: MessageSquare,   label: 'Messages',     path: '/buyer/messages',   badge: true  },
-    { icon: User,            label: 'Profile',      path: '/buyer/profile',    badge: false },
+    { icon: LayoutDashboard, label: t('Dashboard'),    path: '/buyer/dashboard',  badge: false },
+    { icon: Search,          label: t('Browse Crops'), path: '/buyer/browse',     badge: false },
+    { icon: Megaphone,       label: t('Post Need'),    path: '/buyer/needs',      badge: false },
+    { icon: ShoppingBag,     label: t('My Orders'),    path: '/buyer/orders',     badge: false },
+    { icon: MessageSquare,   label: t('Messages'),     path: '/buyer/messages',   badge: true  },
+    { icon: User,            label: t('Profile'),      path: '/buyer/profile',    badge: false },
   ];
 
   const links = user.role === 'farmer' ? farmerLinks : buyerLinks;
@@ -71,7 +74,7 @@ export default function Sidebar() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Brand — top */}
-      <div className="flex-shrink-0 px-6 py-5 flex items-center gap-3 border-b border-stone-100">
+      <div className="shrink-0 px-6 py-5 flex items-center gap-3 border-b border-stone-100">
         <div className="bg-green-600 p-1.5 rounded-xl shadow-sm">
           <Sprout className="h-5 w-5 text-white" />
         </div>
@@ -100,7 +103,7 @@ export default function Sidebar() {
               `}
             >
               <Icon
-                className={`flex-shrink-0 transition-transform duration-150 ${
+                className={`shrink-0 transition-transform duration-150 ${
                   isActive
                     ? 'text-white'
                     : 'text-stone-400 group-hover:text-stone-600 group-hover:scale-110'
@@ -113,7 +116,7 @@ export default function Sidebar() {
               {showBadge && (
                 <span
                   key={badgeLabel}
-                  className="badge-pop badge-pulse inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none shadow-sm"
+                  className="badge-pop badge-pulse inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold leading-none shadow-sm"
                 >
                   {badgeLabel}
                 </span>
@@ -127,19 +130,22 @@ export default function Sidebar() {
       </nav>
 
       {/* User info + Logout — pinned to bottom */}
-      <div className="flex-shrink-0 border-t border-stone-100 px-3 py-3 space-y-1">
+      <div className="shrink-0 border-t border-stone-100 px-3 py-3 space-y-1">
+        <div className="px-1 py-1">
+          <LanguageSwitcher compact className="w-full justify-between" />
+        </div>
         {/* User card */}
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-stone-50 border border-stone-100">
           <img
             src={avatarUrl}
             alt={user.fullName}
-            className="h-8 w-8 rounded-full object-cover ring-2 ring-green-200 flex-shrink-0"
+            className="h-8 w-8 rounded-full object-cover ring-2 ring-green-200 shrink-0"
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-stone-800 truncate leading-tight">{user.fullName}</p>
             <p className="text-[11px] text-stone-400 capitalize leading-tight">{user.role}</p>
           </div>
-          <div className="w-2 h-2 rounded-full bg-green-500 ring-2 ring-green-100 flex-shrink-0" title="Online" />
+          <div className="w-2 h-2 rounded-full bg-green-500 ring-2 ring-green-100 shrink-0" title="Online" />
         </div>
 
         {/* Logout button */}
@@ -157,8 +163,8 @@ export default function Sidebar() {
           `}
         >
           {isLoggingOut
-            ? <><Loader2 className="h-4 w-4 animate-spin" /><span>Logging out…</span></>
-            : <><LogOut className="h-4 w-4" /><span>Logout</span></>
+            ? <><Loader2 className="h-4 w-4 animate-spin" /><span>{t('Logging out…')}</span></>
+            : <><LogOut className="h-4 w-4" /><span>{t('Logout')}</span></>
           }
         </button>
       </div>
@@ -198,7 +204,7 @@ export default function Sidebar() {
         <button
           onClick={() => setMobileOpen(true)}
           className="w-9 h-9 flex items-center justify-center rounded-xl text-stone-600 hover:bg-stone-100 transition-colors"
-          aria-label="Open menu"
+          aria-label={t('Open menu')}
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -211,7 +217,7 @@ export default function Sidebar() {
         </div>
 
         {badgeLabel && (
-          <span className="badge-pop inline-flex items-center justify-center min-w-[22px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
+          <span className="badge-pop inline-flex items-center justify-center min-w-5.5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[10px] font-bold">
             {badgeLabel}
           </span>
         )}
@@ -237,7 +243,7 @@ export default function Sidebar() {
             <button
               onClick={() => setMobileOpen(false)}
               className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors z-10"
-              aria-label="Close menu"
+              aria-label={t('Close menu')}
             >
               <X className="h-4 w-4" />
             </button>

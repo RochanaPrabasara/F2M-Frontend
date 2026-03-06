@@ -14,6 +14,7 @@ import { loadSlim } from "tsparticles-slim"
 import type { Engine } from "tsparticles-engine"
 import { Navigation } from '../components/Navigation'
 import { Footer } from '../components/Footer'
+import { LanguageSwitcher } from '../components/LanguageSwitcher'
 import heroImage from '../assets/sri-lanka-farmland.jpg'
 import farmerImage from '../assets/farmer-using-phone.png'
 
@@ -134,6 +135,9 @@ export default function Landing() {
 
       <div className="relative z-10">
         <Navigation />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 flex justify-end">
+          <LanguageSwitcher />
+        </div>
 
         {/* Hero Section */}
         <section className="relative bg-green-900 text-white overflow-hidden">

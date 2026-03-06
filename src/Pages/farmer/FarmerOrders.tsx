@@ -133,10 +133,10 @@ export default function FarmerOrders() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-stone-900">Incoming Orders</h1>
-        <p className="text-gray-600 mt-2">Manage buyer orders in real-time</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900">Incoming Orders</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-2">Manage buyer orders in real-time</p>
       </div>
 
       <Tabs
@@ -148,6 +148,7 @@ export default function FarmerOrders() {
         ]}
         activeTab={activeTab}
         onChange={setActiveTab}
+        mobileLayout="grid"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

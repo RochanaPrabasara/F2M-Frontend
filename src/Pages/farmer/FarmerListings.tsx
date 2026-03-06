@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Plus, Sprout } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 import { Modal } from '../../components/ui/Modal';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
@@ -18,6 +19,7 @@ import {
 import type { Listing } from '../../services/listing.service';
 
 export default function FarmerListings() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen]   = useState(false);
   const [listings, setListings]         = useState<Listing[]>([]);
   const [loading, setLoading]           = useState(true);
@@ -42,7 +44,7 @@ export default function FarmerListings() {
         if (!cancelled) setListings(data);
       } catch (err) {
         if (!cancelled) {
-          const msg = err instanceof Error ? err.message : 'Failed to load listings';
+          const msg = err instanceof Error ? err.message : t('Failed to load listings');
           setError(msg);
           toast.error(msg);
         }
@@ -69,7 +71,7 @@ export default function FarmerListings() {
   }, [editing]);
 
   const handleSubmitListing = async (data: ListingFormValues) => {
-    const toastId = toast.loading(editing ? 'Updating listing…' : 'Creating listing…');
+    const toastId = toast.loading(editing ? t('Updating listing…') : t('Creating listing…'));
     try {
       setSubmitting(true);
       const payload = {
@@ -86,17 +88,17 @@ export default function FarmerListings() {
       if (editing) {
         const updated = await updateListing(editing.id, payload);
         setListings((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
-        toast.success(`"${updated.name}" updated successfully!`, { id: toastId });
+        toast.success(t('"{{name}}" updated successfully!', { name: updated.name }), { id: toastId });
       } else {
         const created = await createListing(payload);
         setListings((prev) => [created, ...prev]);
-        toast.success(`"${created.name}" listing created! Buyers can now see it.`, { id: toastId });
+        toast.success(t('"{{name}}" listing created! Buyers can now see it.', { name: created.name }), { id: toastId });
       }
 
       setIsModalOpen(false);
       setEditing(null);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to save listing';
+      const msg = err instanceof Error ? err.message : t('Failed to save listing');
       toast.error(msg, { id: toastId });
     } finally {
       setSubmitting(false);
@@ -116,17 +118,17 @@ export default function FarmerListings() {
 
   const confirmDelete = async () => {
     if (!deletingId) return;
-    const listingName = listings.find((l) => l.id === deletingId)?.name ?? 'Listing';
-    const toastId = toast.loading('Deleting listing…');
+    const listingName = listings.find((l) => l.id === deletingId)?.name ?? t('Listing');
+    const toastId = toast.loading(t('Deleting listing…'));
     try {
       setDeleting(true);
       await deleteListing(deletingId);
       setListings((prev) => prev.filter((x) => x.id !== deletingId));
       setConfirmOpen(false);
       setDeletingId(null);
-      toast.success(`"${listingName}" has been deleted.`, { id: toastId });
+      toast.success(t('"{{name}}" has been deleted.', { name: listingName }), { id: toastId });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to delete listing';
+      const msg = err instanceof Error ? err.message : t('Failed to delete listing');
       toast.error(msg, { id: toastId });
     } finally {
       setDeleting(false);
@@ -134,20 +136,20 @@ export default function FarmerListings() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">My Listings</h1>
-          <p className="text-stone-500">Manage your crop inventory</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-stone-900">My Listings</h1>
+          <p className="text-stone-500">{t('Manage your crop inventory')}</p>
         </div>
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="inline-flex items-center px-4 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700 active:bg-green-800 transition-colors"
+          className="inline-flex w-full sm:w-auto justify-center items-center px-4 py-2.5 rounded-lg bg-green-600 text-white text-sm font-medium shadow-sm hover:bg-green-700 active:bg-green-800 transition-colors"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add New Listing
+          {t('Add New Listing')}
         </button>
       </div>
 
@@ -162,7 +164,7 @@ export default function FarmerListings() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           <div className="col-span-full text-center py-10 text-stone-500 text-sm">
-            Loading your listings...
+            {t('Loading your listings...')}
           </div>
         ) : listings.length === 0 ? (
           <div className="col-span-full">
@@ -171,11 +173,10 @@ export default function FarmerListings() {
                 <Sprout className="h-6 w-6 text-stone-400" />
               </div>
               <h2 className="text-sm font-semibold text-stone-900 mb-1">
-                You haven't added any listings yet
+                {t("You haven't added any listings yet")}
               </h2>
               <p className="text-xs sm:text-sm text-stone-500 max-w-md mb-4">
-                Once you add crop listings, buyers will be able to discover and
-                order your produce directly from this platform.
+                {t('Once you add crop listings, buyers will be able to discover and order your produce directly from this platform.')}
               </p>
               <button
                 type="button"
@@ -183,7 +184,7 @@ export default function FarmerListings() {
                 className="inline-flex items-center px-4 py-2 rounded-lg border border-green-600 text-green-700 text-xs font-medium hover:bg-green-50 active:bg-green-100 transition-colors"
               >
                 <Plus className="h-3 w-3 mr-2" />
-                Add Your First Listing
+                {t('Add Your First Listing')}
               </button>
             </div>
           </div>
@@ -214,7 +215,7 @@ export default function FarmerListings() {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={editing ? 'Edit Listing' : 'Add New Crop Listing'}
+        title={editing ? t('Edit Listing') : t('Add New Crop Listing')}
       >
         <ListingForm
           onSubmit={handleSubmitListing}
@@ -227,8 +228,8 @@ export default function FarmerListings() {
       {/* Delete Confirm */}
       <ConfirmDialog
         isOpen={confirmOpen}
-        title="Delete Listing"
-        message="Are you sure you want to delete this listing?"
+        title={t('Delete Listing')}
+        message={t('Are you sure you want to delete this listing?')}
         onCancel={cancelDelete}
         onConfirm={confirmDelete}
         isLoading={deleting}

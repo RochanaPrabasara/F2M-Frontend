@@ -175,10 +175,10 @@ export default function BuyerOrders() {
   if (loading) return <div className="text-center py-20">Loading orders...</div>;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">My Orders</h1>
-        <p className="text-gray-600 mt-2">Track your purchases and payments</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">My Orders</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-2">Track your purchases and payments</p>
       </div>
 
       <Tabs
@@ -190,6 +190,7 @@ export default function BuyerOrders() {
         ]}
         activeTab={activeTab}
         onChange={setActiveTab}
+        mobileLayout="grid"
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

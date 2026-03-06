@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Sprout } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
+  const { t } = useTranslation()
 
   if (
     location.pathname.includes('/dashboard') ||
@@ -32,11 +34,11 @@ export function Navigation() {
               to="/login"
               className="text-stone-700 hover:text-green-700 font-medium transition-colors"
             >
-              Login
+              {t('Login')}
             </Link>
             <Link to="/register">
               <button className="bg-green-600 text-white cursor-pointer px-6 py-2.5 rounded-lg hover:bg-green-700 font-medium transition-colors">
-                Register
+                {t('Register')}
               </button>
             </Link>
           </div>
@@ -45,7 +47,7 @@ export function Navigation() {
           <button
             className="md:hidden text-stone-700 focus:outline-none"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
+            aria-label={t('Open menu')}
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
@@ -61,14 +63,14 @@ export function Navigation() {
               className="block text-lg text-stone-700 hover:text-green-700"
               onClick={() => setIsOpen(false)}
             >
-              Login
+              {t('Login')}
             </Link>
             <Link
               to="/register"
               className="block text-lg text-green-700 font-semibold"
               onClick={() => setIsOpen(false)}
             >
-              Register
+              {t('Register')}
             </Link>
           </div>
         </div>

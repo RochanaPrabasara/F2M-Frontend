@@ -152,7 +152,7 @@ export default function BuyerProfile() {
         <div className="absolute -bottom-8 -left-8 w-48 h-48 rounded-full bg-blue-950/50 blur-2xl pointer-events-none" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6 px-8 pt-8 pb-6">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6 px-4 sm:px-8 pt-8 pb-6">
           {/* Avatar with spinning ring */}
           <div className="relative w-28 h-28 md:w-32 md:h-32 shrink-0 mx-auto md:mx-0 group">
             <div
@@ -221,7 +221,7 @@ export default function BuyerProfile() {
         {/* ── LEFT: Personal Info ── */}
         <div className="lg:col-span-1 bg-white rounded-2xl shadow-md overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-4 sm:px-6 py-4 border-b border-stone-100">
             <h2 className="text-sm font-semibold text-stone-800 flex items-center gap-2">
               <User className="w-4 h-4 text-blue-600" />
               Personal Information
@@ -234,7 +234,7 @@ export default function BuyerProfile() {
                 <Pencil className="w-3 h-3" /> Edit
               </button>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setIsEditing(false)}
                   className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-stone-500 text-xs font-medium hover:bg-stone-100 transition-colors"
@@ -254,7 +254,7 @@ export default function BuyerProfile() {
           </div>
 
           {/* Fields */}
-          <div className="px-6 py-5 space-y-5">
+          <div className="px-4 sm:px-6 py-5 space-y-5">
 
             {/* Full Name */}
             <div className="space-y-1.5">
@@ -368,9 +368,9 @@ export default function BuyerProfile() {
         </div>
 
         {/* ── RIGHT: Tabs + Requests ── */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-md flex flex-col" style={{ minHeight: 600 }}>
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-md flex flex-col min-h-0 lg:min-h-150">
           {/* Tab bar */}
-          <div className="px-6 pt-5 border-b border-stone-100 shrink-0">
+          <div className="px-4 sm:px-6 pt-5 border-b border-stone-100 shrink-0">
             <Tabs
               tabs={tabs}
               activeTab={activeTab}
@@ -379,7 +379,7 @@ export default function BuyerProfile() {
           </div>
 
           {/* Tab content */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-4 sm:p-6">
             {activeTab === 'requests' && (
               requests.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
@@ -399,7 +399,7 @@ export default function BuyerProfile() {
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-125 overflow-y-auto pr-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:max-h-125 md:overflow-y-auto md:pr-2">
                   {requests.map((req) => (
                     <BuyerNeedCard key={req.id} need={req} editable={false} />
                   ))}

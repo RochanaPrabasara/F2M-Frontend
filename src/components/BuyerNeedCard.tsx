@@ -38,7 +38,7 @@ export function BuyerNeedCard({ need, editable = false, onEdit, onDelete }: Buye
     <Card hover className="flex flex-col h-full relative overflow-hidden">
       <div className="p-5 flex-1 flex flex-col">
         {/* ─── Updated header with buyer info ─── */}
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <h3 className="text-lg font-bold text-stone-900 leading-tight mb-1">
               {need.cropName}
@@ -51,10 +51,10 @@ export function BuyerNeedCard({ need, editable = false, onEdit, onDelete }: Buye
                 className="inline-flex items-center gap-1.5 text-sm text-green-700 hover:text-green-800 hover:underline group"
                 title="View buyer's profile"
               >
-                <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 border border-green-100">
+                <div className="w-5 h-5 rounded-full bg-green-50 flex items-center justify-center shrink-0 border border-green-100">
                   <User className="h-3 w-3 text-green-700" />
                 </div>
-                <span className="font-medium truncate max-w-[180px] sm:max-w-[220px]">
+                <span className="font-medium truncate max-w-45 sm:max-w-55">
                   {need.buyer.fullName}
                 </span>
               </Link>
@@ -62,7 +62,7 @@ export function BuyerNeedCard({ need, editable = false, onEdit, onDelete }: Buye
           </div>
 
           {/* Urgency badge + edit controls */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
             {editable && onEdit && (
               <button
                 type="button"

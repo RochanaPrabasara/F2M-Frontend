@@ -168,11 +168,11 @@ export default function FarmerDashboard() {
   const formatTrend = (val: number) => Math.abs(val);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-stone-900">Dashboard</h1>
           <p className="text-stone-500 mt-1">Welcome back, {user?.fullName ?? 'Farmer'}</p>
         </div>
       </div>
@@ -210,7 +210,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* AI Price Forecast */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-stone-100">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-bold text-stone-900">AI Price Forecast</h2>
           {forecastLoading && (
@@ -278,7 +278,7 @@ export default function FarmerDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-stone-100">
         <h3 className="text-lg font-bold text-stone-900 mb-4">Recent Activity</h3>
 
         {statsLoading ? (
@@ -309,8 +309,8 @@ export default function FarmerDashboard() {
               const cfg = STATUS_CONFIG[item.status] || STATUS_CONFIG['pending'];
               const Icon = cfg.icon;
               return (
-                <div key={item.id} className="flex items-center gap-4 py-3">
-                  <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 py-3">
+                  <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center shrink-0">
                     <Package className="h-5 w-5 text-green-600" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -324,7 +324,7 @@ export default function FarmerDashboard() {
                       </span>
                     </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
+                  <div className="text-left sm:text-right shrink-0 w-full sm:w-auto pl-12 sm:pl-0">
                     <p className="text-sm font-semibold text-stone-900">
                       LKR {item.amount.toLocaleString()}
                     </p>

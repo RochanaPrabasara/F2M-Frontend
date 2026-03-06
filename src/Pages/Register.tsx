@@ -244,13 +244,13 @@ export default function Register() {
           
 
           <div className="bg-white/95 backdrop-blur-sm rounded-xl border border-stone-200 shadow-sm p-5.5 lg:p-6.5">
-            <div className="flex justify-center gap-4 mb-7">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-7">
               <button
                 type="button"
                 onClick={() => setUserType('farmer')}
                 disabled={loading}
                 className={`
-                  flex flex-col items-center justify-center w-35 h-24 rounded-lg border-2 transition-all
+                  flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 transition-all
                   ${userType === 'farmer'
                     ? 'border-green-600 bg-green-50 text-green-800 shadow-sm'
                     : 'border-stone-200 hover:border-stone-300 text-stone-600 hover:bg-stone-50 active:bg-stone-100'
@@ -267,7 +267,7 @@ export default function Register() {
                 onClick={() => setUserType('buyer')}
                 disabled={loading}
                 className={`
-                  flex flex-col items-center justify-center w-35 h-24 rounded-lg border-2 transition-all
+                  flex flex-col items-center justify-center w-full h-24 rounded-lg border-2 transition-all
                   ${userType === 'buyer'
                     ? 'border-green-600 bg-green-50 text-green-800 shadow-sm'
                     : 'border-stone-200 hover:border-stone-300 text-stone-600 hover:bg-stone-50 active:bg-stone-100'
@@ -309,7 +309,7 @@ export default function Register() {
                 <div className={`flex border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-green-500 transition-shadow
                   ${errors.phone ? 'border-red-300 bg-red-50' : 'border-stone-300'}
                 `}>
-                  <div className="bg-stone-100 px-3 py-2.5 text-sm text-stone-700 font-medium border-r border-stone-300 flex items-center gap-1.5 min-w-22.5">
+                  <div className="bg-stone-100 px-2.5 sm:px-3 py-2.5 text-sm text-stone-700 font-medium border-r border-stone-300 flex items-center gap-1.5 shrink-0">
                     <span className="text-base">🇱🇰 +94</span>
                   </div>
                   <input
